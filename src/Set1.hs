@@ -64,3 +64,10 @@ repRandom [] seed = ([], seed)
 repRandom (g:gs) seed = let (val, s) = g seed
                             (vals, s2) = repRandom gs s
                         in ([val] ++ vals, s2)
+
+genTwo :: Gen a -> (a -> Gen b) -> Gen b
+genTwo g t s = let (val, seed) = g s
+               in t val seed
+
+mkGen :: a -> Gen a
+mkGen x seed = (x, seed)
