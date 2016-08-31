@@ -58,3 +58,9 @@ generalB f g t s = let (val1, seed1) = f s
 
 generalPair2 :: Gen a -> Gen b -> Gen (a, b)
 generalPair2 f g = generalB f g (\a b -> (a, b))
+
+repRandom :: [Gen a] -> Seed -> ([a], Seed)
+repRandom [] seed = ([], seed)
+repRandom (g:gs) seed = let (val, s) = g seed
+                            (vals, s2) = repRandom gs s
+                        in ([val] ++ vals, s2)
