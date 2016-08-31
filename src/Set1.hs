@@ -25,18 +25,36 @@ randString3 :: String
 randString3 = buildList randomLetter 3 (mkSeed 1) []
 
 randEven :: Gen Integer
-randEven = generalB rand (2*)
+randEven = generalA2 rand (2*)
 
 randOdd :: Gen Integer
-randOdd = generalB rand (\i -> 2*i - 1)
+randOdd = generalA2 rand (\i -> 2*i - 1)
 
 randTen :: Gen Integer
-randTen = generalB rand (10*)
+randTen = generalA2 rand (10*)
 
 generalA :: (Integer -> Integer) -> Gen Integer
 generalA transform = let output = \(i, seed) -> (transform i, seed)
                      in output . rand
 
-generalB :: Gen a -> (a -> a) -> Gen a
-generalB r t = let output = \(i, seed) -> (t i, seed)
+generalA2 :: Gen a -> (a -> a) -> Gen a
+generalA2 r t = let output = \(i, seed) -> (t i, seed)
                in output . r
+
+randPair :: Gen (Char, Integer)
+randPair s = let (letter, seed) = randomLetter s
+                 (number, seed2) = rand seed
+             in ((letter, number), seed2)
+
+generalPair :: Gen a -> Gen b -> Gen (a,b)
+generalPair f g s = let (val1, seed1) = f s
+                        (val2, seed2) = g seed1
+                    in ((val1, val2), seed2)
+
+generalB :: Gen a -> Gen b -> (a -> b -> c) -> Gen c
+generalB f g t s = let (val1, seed1) = f s
+                       (val2, seed2) = g seed1
+                   in (t val1 val2, seed2)
+
+generalPair2 :: Gen a -> Gen b -> Gen (a, b)
+generalPair2 f g = generalB f g (\a b -> (a, b))
