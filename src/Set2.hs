@@ -84,3 +84,34 @@ queryGreek2 db key = (lookupMay db key) <&> divHeadTail
                          in num <&> (\n -> denom <&>
                                            (\d -> Some(fromInteger d))  <&>
                                                   divMay (fromInteger n))
+
+addSalaries :: [(String, Integer)] -> String -> String -> Maybe Integer
+addSalaries db n1 n2 = let v1 = lookup db n1
+                           v2 = lookup db n2
+                       in case (v1, v2) of
+                            (Some p1, Some p2) -> mkMaybe ((snd p1) + (snd p2))
+                            _ -> None
+    where lookup [] _ = None
+          lookup xs y = case xs of
+                          [] -> None
+                          (x:xs) -> if (fst x) == y
+                                    then mkMaybe x
+                                    else
+                                      lookup xs y
+
+yLink ::  (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+yLink f (Some x) (Some y) = mkMaybe (f x y)
+yLink _ _ _ = None
+
+addSalaries2 :: [(String, Integer)] -> String -> String -> Maybe Integer
+addSalaries2 db n1 n2 = yLink (\x y -> (snd x) + (snd y)) (lookup db n1) (lookup db n2)
+    where lookup [] _ = None
+          lookup xs y = case xs of
+                          [] -> None
+                          (x:xs) -> if (fst x) == y
+                                    then mkMaybe x
+                                    else
+                                      lookup xs y
+
+mkMaybe :: a -> Maybe a
+mkMaybe a = Some a
