@@ -115,3 +115,42 @@ addSalaries2 db n1 n2 = yLink (\x y -> (snd x) + (snd y)) (lookup db n1) (lookup
 
 mkMaybe :: a -> Maybe a
 mkMaybe a = Some a
+
+tailProd :: Num a => [a] -> Maybe a
+tailProd = chain (\xs -> mkMaybe (product xs)) . tailMay
+
+tailSum :: Num a => [a] -> Maybe a
+tailSum = chain (\xs -> mkMaybe (sum xs)) . tailMay
+
+transMaybe :: (a -> b) -> Maybe a -> Maybe b
+transMaybe f (Some xs) = mkMaybe $ f xs
+transMaybe _ _ = None
+
+tailProd1 :: Num a => [a] -> Maybe a
+tailProd1 = transMaybe (\xs -> product xs) . tailMay
+
+tailSum1 :: Num a => [a] -> Maybe a
+tailSum1 = transMaybe (\xs -> sum xs) . tailMay
+
+tailMax :: Ord a => [a] -> Maybe a
+tailMax xs = link (tailMay xs) maximumMay
+
+tailMin :: Ord a => [a] -> Maybe a
+tailMin xs = link (tailMay xs) minimumMay
+
+tailMaxTrans :: Ord a => [a] -> Maybe (Maybe a)
+tailMaxTrans = transMaybe maximumMay . tailMay
+
+tailMinTrans :: Ord a => [a] -> Maybe (Maybe a)
+tailMinTrans = transMaybe minimumMay . tailMay
+
+combine :: Maybe (Maybe a) -> Maybe a
+combine (Some (Some x)) = Some x
+combine _ = None
+
+tailMaxTransFlat :: Ord a => [a] -> Maybe a
+tailMaxTransFlat = combine . transMaybe maximumMay . tailMay
+
+tailMinTransFlat :: Ord a => [a] -> Maybe a
+tailMinTransFlat = combine . transMaybe maximumMay . tailMay
+
