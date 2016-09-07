@@ -25,3 +25,16 @@ allCards _ [] = []
 allCards (x:xs) ys = (cards x ys) ++ (allCards xs ys)
   where cards e [] = []
         cards e (z:zs) = (Card  e z):(cards e zs)
+
+allCombs :: (a -> b -> c) -> [a] -> [b] -> [c]
+allCombs _ [] _ = []
+allCombs _ _ [] = []
+allCombs f (x:xs) ys = (combs x ys) ++ (allCombs f xs ys)
+  where combs e [] = []
+        combs e (z:zs) = (f e z):(combs e zs)
+
+allPairs2 :: [a] -> [b] -> [(a, b)]
+allPairs2 = allCombs (,)
+
+allCards2 :: [Int] -> [String] -> [Card]
+allCards2 = allCombs Card
