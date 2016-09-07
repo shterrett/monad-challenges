@@ -153,4 +153,3 @@ tailMaxTransFlat = combine . transMaybe maximumMay . tailMay
 
 tailMinTransFlat :: Ord a => [a] -> Maybe a
 tailMinTransFlat = combine . transMaybe maximumMay . tailMay
-
