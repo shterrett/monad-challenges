@@ -32,3 +32,9 @@ allPairs2 = allCombs (,)
 
 allCards2 :: [Int] -> [String] -> [Card]
 allCards2 = allCombs Card
+
+allCombs3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+allCombs3 _ [] _ _ = []
+allCombs3 _ _ [] _ = []
+allCombs3 _ _ _ [] = []
+allCombs3 f xs ys zs = allCombs (\g z -> g z) (allCombs f xs ys) zs
