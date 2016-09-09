@@ -41,3 +41,8 @@ instance Monad Maybe where
     return a = Some a
     bind (Some x) f = f x
     bind None _ = None
+
+instance Monad [] where
+    return a = [a]
+    bind (g:gs) f = (f g) ++ bind gs f
+    bind [] f = []
