@@ -38,3 +38,19 @@ allCombs3 _ [] _ _ = []
 allCombs3 _ _ [] _ = []
 allCombs3 _ _ _ [] = []
 allCombs3 f xs ys zs = allCombs (\g z -> g z) (allCombs f xs ys) zs
+
+combStep :: [(a -> b)] -> [a] -> [b]
+combStep _ [] = []
+combStep [] _ = []
+combStep fs xs = allCombs (\f x -> f x) fs xs
+
+allCombs' :: (a -> b -> c) -> [a] -> [b] -> [c]
+allCombs' _ [] _ = []
+allCombs' _ _ [] = []
+allCombs' f xs ys = combStep (map f xs) ys
+
+allCombs3' :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+allCombs3' _ [] _ _ = []
+allCombs3' _ _ [] _ = []
+allCombs3' _ _ _ [] = []
+allCombs3' f xs ys zs = combStep (combStep (map f xs) ys) zs
