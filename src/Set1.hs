@@ -77,3 +77,7 @@ generalB2 ga gb t s = let (va, sa) = ga s
                       in genTwo gb
                                 (\vb -> mkGen (t va vb))
                                 sa
+
+repRandom2 :: [Gen a] -> Gen [a]
+repRandom2 [] = mkGen []
+repRandom2 (g:gs) = generalB2 g (repRandom2 gs) (\v vs -> [v] ++ vs)
