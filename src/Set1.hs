@@ -57,7 +57,7 @@ generalB f g t s = let (val1, seed1) = f s
                    in (t val1 val2, seed2)
 
 generalPair2 :: Gen a -> Gen b -> Gen (a, b)
-generalPair2 f g = generalB f g (\a b -> (a, b))
+generalPair2 f g = generalB2 f g (\a b -> (a, b))
 
 repRandom :: [Gen a] -> Seed -> ([a], Seed)
 repRandom [] seed = ([], seed)
@@ -71,3 +71,9 @@ genTwo g t s = let (val, seed) = g s
 
 mkGen :: a -> Gen a
 mkGen x seed = (x, seed)
+
+generalB2 :: Gen a -> Gen b -> (a -> b -> c) -> Gen c
+generalB2 ga gb t s = let (va, sa) = ga s
+                      in genTwo gb
+                                (\vb -> mkGen (t va vb))
+                                sa
