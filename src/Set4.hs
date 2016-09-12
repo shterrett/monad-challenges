@@ -31,8 +31,8 @@ instance Show a => Show (Maybe a) where
 class Monad m where
     bind :: m a -> (a -> m b) -> m b
     return :: a -> m a
-    yComb :: (a -> b -> c) -> m a -> m b -> m c
-    yComb f m1 m2 = bind m2 (\v2 -> bind mg (\g -> return (g v2)))
+    yLink :: (a -> b -> c) -> m a -> m b -> m c
+    yLink f m1 m2 = bind m2 (\v2 -> bind mg (\g -> return (g v2)))
       where mg = bind m1 (\v1 -> return (f v1)) -- -> Monad (b -> c)
 
 instance Monad Maybe where
@@ -52,5 +52,7 @@ evalGen (Gen g) s = fst (g s)
 
 instance Monad Gen where
     return x = Gen (\s -> (x, s))
-    bind (Gen g) f = f . fst . g
+    bind ga f = Gen (\s ->
+                      let (a, s2) = runGen ga s
+                      in runGen (f a) s2)
 
