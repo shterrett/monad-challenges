@@ -5,8 +5,6 @@ module Set4 where
 
 import MCPrelude
 
-type Gen a = Seed -> (a, Seed)
-
 data Maybe a = Some a | None
              deriving Eq
 
@@ -46,3 +44,13 @@ instance Monad [] where
     return a = [a]
     bind (g:gs) f = (f g) ++ bind gs f
     bind [] f = []
+
+newtype Gen a = Gen { runGen :: (Seed -> (a, Seed)) }
+
+evalGen :: Gen a -> Seed -> a
+evalGen (Gen g) s = fst (g s)
+
+instance Monad Gen where
+    return x = Gen (\s -> (x, s))
+    bind (Gen g) f = f . fst . g
+
