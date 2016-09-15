@@ -173,4 +173,21 @@ tailSum ls = liftM (tailMay ls) sum
 
 -- Set 3
 
+allPairs :: [a] -> [b] -> [(a, b)]
+allPairs xs ys = liftM2 xs ys (,)
 
+data Card = Card Int String
+instance Show Card where
+    show (Card r s) = (show r) ++ s
+
+allCards :: [Int] -> [String] -> [Card]
+allCards xs ys = liftM2 xs ys Card
+
+allCombs :: (a -> b -> c) -> [a] -> [b] -> [c]
+allCombs f xs ys = liftM2 xs ys f
+
+allCombs3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+allCombs3 f xs ys zs = liftM3 xs ys zs f
+
+combStep :: [(a -> b)] -> [a] -> [b]
+combStep fs xs = liftM2 fs xs (\f x -> f x)
